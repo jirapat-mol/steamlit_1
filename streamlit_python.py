@@ -1,5 +1,5 @@
 import streamlit as st
-import kagglehub
+# import kagglehub
 import pandas as pd
 # path = kagglehub.dataset_download("laotse/credit-risk-dataset")
 # print("Path to dataset files:", path)
