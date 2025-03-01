@@ -31,6 +31,19 @@ col1, col2, col3 = st.columns(3)
 
 with col1:    
     st.metric("Total Loan Amount", "$" + str(df['Loan Amount'].sum()),border=True)
+    st.markdown(
+        """
+        <style>
+        div[data-testid="metric-container"] {
+            background-color: white;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 5% 5% 5% 10%;
+            border-radius: 5px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
 with col2:
     st.metric("Average Loan Amount", "$" + str(df['Loan Amount'].mean()),border=True)
