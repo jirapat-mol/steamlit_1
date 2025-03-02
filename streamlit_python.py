@@ -27,34 +27,41 @@ st.sidebar.title("Credit Risk Analysis")
 st.title("Risk Analysis and Portfolio Management")
 # st.subheader("NgernTurbo")
 
-col1, col2, col3 = st.columns(3)
+topcol1, topcol2, topcol3 = st.columns(3)
 
-with col1:    
+with topcol1:    
     st.metric("Total Loan Amount", "$" + str(df['Loan Amount'].sum()),border=True)
-    st.markdown(
-        """
-        <style>
-        div[data-testid="metric-container"] {
-            background-color: white;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            padding: 5% 5% 5% 10%;
-            border-radius: 5px;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-with col2:
+with topcol2:
     st.metric("Average Loan Amount", "$" + str(df['Loan Amount'].mean()),border=True)
-with col3:
+with topcol3:
     st.metric("Total Income", "$" + str(df['Income'].sum()),border=True)
 
 st.markdown("### Data Preview")
-st.table(df[0:5].style.format(precision=2).highlight_max(subset=['Income'], color='pink'))
+st.table(df[0:5].style.format(precision=2).highlight_max(subset=['Income'], color='pink').set_properties(**{'background-color': 'white', 'color': '#014888'}))
+
+
 
 st.markdown("### Data Summary")
-st.write(df.describe().style.format(precision=2))
+def stream_data():
+    # for word in _LOREM_IPSUM.split(" "):
+    #     yield word + " "
+    #     time.sleep(0.02)
+
+    yield pd.DataFrame(
+        df.describe(),
+        columns=["Age", "Income", "Employment Length", "Loan Amount", "Interest Rate", "Loan Percent Income", "Credit History Length"],
+    )
+
+    # for word in _LOREM_IPSUM.split(" "):
+    #     yield word + " "
+    #     time.sleep(0.02)
+
+
+if st.button("Show Summary"):
+    st.dataframe(next(stream_data()).style
+             .set_properties(**{'background-color': 'white', 'color': '#014888'})
+    )
+# st.write(df.describe().style.format(precision=2))
 
 st.markdown("### Data Visualization")
 
@@ -64,12 +71,23 @@ st.markdown("### Data Visualization")
 #show the distribution of Loan Percent Income
 import matplotlib.pyplot as plt
 
-fig, ax = plt.subplots()
-sns.histplot(df['Loan Percent Income']*100, kde=True, ax=ax,binwidth=5,color='pink')
-ax.set_title('Loan Percent Income Distribution')
-st.pyplot(fig)
+middlecol1, middlecol2 = st.columns(2)
 
-High_LPI = df[df['Loan Percent Income'] > 0.4]
-st.write(High_LPI)
+with middlecol1:
+    fig, ax = plt.subplots()
+    sns.histplot(df['Loan Percent Income']*100, kde=True, ax=ax, binwidth=5, color='pink')
+    ax.set_title('Loan Percent Income Distribution', fontsize=16, fontweight='bold')
+    ax.set_xlabel('Loan Percent Income (%)', fontsize=14)
+    ax.set_ylabel('Frequency', fontsize=14)
+    sns.despine()
+    st.pyplot(fig)
+
+with middlecol2:
+    st.markdown("### The Loan Persons that have loan percent income more than 40%")
+    High_LPI = df[df['Loan Percent Income'] > 0.4].reset_index(drop=True)
+    st.table(
+        High_LPI.head(9).style
+        .set_properties(**{'background-color': 'white', 'color': '#014888'})
+    )
 
 
